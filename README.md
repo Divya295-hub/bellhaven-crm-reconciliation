@@ -1,4 +1,4 @@
-\# Bellhaven CRM Reconciliation
+# Bellhaven CRM Reconciliation
 
 
 
@@ -6,7 +6,7 @@ A small Python project for comparing Bellhaven Senior Living's current communiti
 
 
 
-\## What this project does
+## What this project does
 
 
 
@@ -18,19 +18,19 @@ This project helps identify those differences by:
 
 
 
-1\. Collecting the current Bellhaven communities from the website.
+1. Collecting the current Bellhaven communities from the website.
 
-2\. Pulling the Bellhaven-related CRM accounts.
+2. Pulling the Bellhaven-related CRM accounts.
 
-3\. Matching website communities to CRM accounts using address, ZIP code, city, state, and name.
+3. Matching website communities to CRM accounts using address, ZIP code, city, state, and name.
 
-4\. Identifying ownership or data issues that need attention.
+4. Identifying ownership or data issues that need attention.
 
-5\. Applying the CRM billing/CHOW rules when deciding what action is safe.
+5. Applying the CRM billing/CHOW rules when deciding what action is safe.
 
-6\. Sending proposed changes to a small review app.
+6. Sending proposed changes to a small review app.
 
-7\. Requiring human approval before making CRM changes.
+7. Requiring human approval before making CRM changes.
 
 
 
@@ -42,7 +42,7 @@ The goal is not to automatically change everything that looks different. The goa
 
 
 
-\## Project structure
+## Project structure
 
 
 
@@ -96,7 +96,7 @@ bellhaven-crm-reconciliation/
 
 
 
-\## How the workflow works
+## How the workflow works
 
 
 
@@ -104,49 +104,48 @@ bellhaven-crm-reconciliation/
 
 Bellhaven Website
 
-&#x20;      ↓
+     ↓
+ scraper.py
 
-&#x20;  scraper.py
-
-&#x20;      ↓
+     ↓
 
 website\_locations.csv
 
-&#x20;      ↓
+     ↓
 
-&#x20;  matching.py
+matching.py
 
-&#x20;      ↓
+     ↓
 
 matching\_results.csv
 
-&#x20;      ↑
+     ↑
 
-&#x20;  crm.py
+  crm.py
 
-&#x20;      ↑
+     ↑
 
 crm\_accounts.csv
 
-&#x20;      ↓
+     ↓
 
-&#x20; proposals.py
+proposals.py
 
-&#x20;      ↓
+     ↓
 
 final\_proposals.csv
 
-&#x20;      ↓
+     ↓
 
 review\_app.py
 
-&#x20;      ↓
+     ↓
 
-&#x20;Human Approval
+Human Approval
 
-&#x20;      ↓
+     ↓
 
-&#x20;    CRM API
+  CRM API
 
 ```
 
@@ -160,7 +159,7 @@ Each part has a separate responsibility so that data collection, matching, propo
 
 
 
-\## 1. Website scraping
+## 1. Website scraping
 
 
 
@@ -175,18 +174,15 @@ This was important because the homepage contained a current community that was n
 The scraper follows community links and pagination and collects:
 
 
+<ul>
+  <li>Community name</li>
+  <li>Street address</li>
+  <li>City</li>
+  <li>State</li>
+  <li>ZIP code</li>
+  <li>Care offerings</li>
+</ul>
 
-\* Community name
-
-\* Street address
-
-\* City
-
-\* State
-
-\* ZIP code
-
-\* Care offerings
 
 
 
@@ -210,7 +206,7 @@ website\_locations.csv
 
 
 
-\## 2. CRM extraction
+## 2. CRM extraction
 
 
 
@@ -229,29 +225,19 @@ The original CRM extract contained \*\*121 accounts\*\*.
 The CRM data includes fields such as:
 
 
-
-\* Account ID
-
-\* Account name
-
-\* Parent account
-
-\* Address
-
-\* Care type
-
-\* Status
-
-\* Lifetime revenue
-
-\* Outstanding AR
-
-\* CHOW information
-
-\* Duplicate information
-
-\* Notes
-
+<ul>
+  <li>Account ID</li>
+  <li>Account name</li>
+  <li>Parent account</li>
+  <li>Address</li>
+  <li>Care type</li>
+  <li>Status</li>
+  <li>Lifetime revenue</li>
+  <li>Outstanding AR</li>
+  <li>CHOW information</li>
+  <li>Duplicate information</li>
+  <li>Notes</li>
+</ul>
 
 
 The original CRM extract is saved as:
@@ -274,7 +260,7 @@ The project does not store the API token in the repository.
 
 
 
-\## 3. Matching website communities to CRM accounts
+## 3. Matching website communities to CRM accounts
 
 
 
@@ -288,34 +274,23 @@ The matching logic gives the most weight to location information because address
 
 The current scoring uses:
 
-
-
-\* Exact street match: 45 points
-
-\* Exact ZIP match: 25 points
-
-\* Exact city match: 15 points
-
-\* Exact state match: 5 points
-
-\* Very similar name: 10 points
-
-\* Similar name: 7 points
-
-\* Somewhat similar name: 3 points
-
-
+<ul>
+  <li>Exact street match: 45 points</li>
+  <li>Exact ZIP match: 25 points</li>
+  <li>Exact city match: 15 points</li>
+  <li>Exact state match: 5 points</li>
+  <li>Very similar name: 10 points</li>
+  <li>Similar name: 7 points</li>
+  <li>Somewhat similar name: 3 points</li>
+</ul>
 
 A match is considered credible when there is enough location evidence, such as:
 
-
-
-\* Matching street and ZIP
-
-\* Matching street and city
-
-\* Matching ZIP and city with a sufficiently similar name
-
+<ul>
+  <li>Matching street and ZIP</li>
+  <li>Matching street and city</li>
+  <li>Matching ZIP and city with a sufficiently similar name</li>
+</ul>
 
 
 This helps avoid incorrectly linking two facilities just because their names look similar.
@@ -338,7 +313,7 @@ matching\_results.csv
 
 
 
-\## 4. Parent ownership decisions
+## 4. Parent ownership decisions
 
 
 
@@ -348,20 +323,14 @@ The website was treated as the best source for Bellhaven's current public footpr
 
 The CRM was treated as the source for CRM-specific information such as:
 
-
-
-\* Account IDs
-
-\* Revenue history
-
-\* Outstanding AR
-
-\* Historical relationships
-
-\* Duplicate information
-
-\* CHOW information
-
+<ul>
+  <li>Account IDs</li>
+  <li>Revenue history</li>
+  <li>Outstanding AR</li>
+  <li>Historical relationships</li>
+  <li>Duplicate information</li>
+  <li>CHOW information</li>
+</ul>
 
 
 This distinction matters because a website can show the current ownership relationship while the CRM still needs to preserve an older account for billing purposes.
@@ -380,18 +349,16 @@ In other words:
 
 
 
-\## 5. CHOW and billing rule
+## 5. CHOW and billing rule
 
 
 
 Before changing the parent of a CRM account, the project checks:
 
-
-
-\* Lifetime revenue
-
-\* Outstanding AR
-
+<ul>
+  <li>Lifetime revenue</li>
+  <li>Outstanding AR</li>
+</ul>
 
 
 If an account has \*\*both\*\*:
@@ -438,7 +405,7 @@ This prevents historical billing information from being lost.
 
 
 
-\## 6. Reverse CRM check
+## 6. Reverse CRM check
 
 
 
@@ -466,7 +433,7 @@ These were not automatically deleted or changed. They were placed into review be
 
 
 
-\## 7. Duplicate handling
+## 7. Duplicate handling
 
 
 
@@ -477,19 +444,14 @@ The CRM data also contained possible duplicate accounts.
 The project looks for records with matching facility details such as:
 
 
-
-\* Name
-
-\* Address
-
-\* City
-
-\* State
-
-\* ZIP
-
-\* Parent
-
+<ul>
+  <li>Name</li>
+  <li>Address</li>
+  <li>City</li>
+  <li>State</li>
+  <li>ZIP</li>
+  <li>Parent</li>
+</ul>
 
 
 Only the clearest duplicate case was automatically proposed.
@@ -498,14 +460,12 @@ Only the clearest duplicate case was automatically proposed.
 
 For that case, the surviving account was kept active and the duplicate account was:
 
-
-
 \* Marked `Inactive`
 
 \* Linked using `duplicate\_of\_account`
 
 \* Given a note explaining the decision
-
+</ul>
 
 
 The project does not merge or delete CRM accounts.
@@ -516,7 +476,7 @@ The project does not merge or delete CRM accounts.
 
 
 
-\## 8. Proposal queue
+## 8. Proposal queue
 
 
 
@@ -526,22 +486,15 @@ The initial reconciliation produced \*\*14 proposals\*\*.
 
 These included:
 
-
-
-\* Existing accounts that could be re-parented
-
-\* Accounts requiring CHOW handling
-
-\* An account missing a parent
-
-\* New accounts for website communities without credible CRM matches
-
-\* Accounts requiring research
-
-\* Stale CRM accounts
-
-\* A duplicate account
-
+<ul>
+  <li>Existing accounts that could be re-parented</li>
+  <li>Accounts requiring CHOW handling</li>
+  <li>An account missing a parent</li>
+  <li>New accounts for website communities without credible CRM matches</li>
+  <li>Accounts requiring research</li>
+  <li>Stale CRM accounts</li>
+  <li>A duplicate account</li>
+</ul>
 
 
 Of the initial proposals, \*\*10 appropriate CRM changes were approved and processed\*\*.
@@ -550,16 +503,12 @@ Of the initial proposals, \*\*10 appropriate CRM changes were approved and proce
 
 The remaining \*\*4 cases were intentionally left for human research\*\*:
 
-
-
-\* Amberly Manor
-
-\* Bellhaven Care Center of Alliance
-
-\* Bellhaven of Coldwater
-
-\* Bellhaven of Sandusky
-
+<ul>
+  <li>Amberly Manor</li>
+  <li>Bellhaven Care Center of Alliance</li>
+  <li>Bellhaven of Coldwater</li>
+  <li>Bellhaven of Sandusky</li>
+</ul>
 
 
 These cases were not automatically changed because the available evidence was not strong enough to justify a safe automated action.
@@ -570,7 +519,7 @@ These cases were not automatically changed because the available evidence was no
 
 
 
-\## 9. Human review app
+## 9. Human review app
 
 
 
@@ -580,28 +529,18 @@ These cases were not automatically changed because the available evidence was no
 
 For each executable proposal, the reviewer can see:
 
-
-
-\* Website community
-
-\* CRM account
-
-\* Account ID
-
-\* Current parent
-
-\* Proposed parent
-
-\* Match score
-
-\* Lifetime revenue
-
-\* Outstanding AR
-
-\* Reason for the proposal
-
-\* Supporting notes
-
+<ul>
+  <li>Website community</li>
+  <li>CRM account</li>
+  <li>Account ID</li>
+  <li>Current parent</li>
+  <li>Proposed parent</li>
+  <li>Match score</li>
+  <li>Lifetime revenue</li>
+  <li>Outstanding AR</li>
+  <li>Reason for the proposal</li>
+  <li>Supporting notes</li>
+</ul>
 
 
 The reviewer can then:
@@ -644,7 +583,7 @@ A human must approve the change first.
 
 
 
-\## 10. Rerun behavior
+## 10. Rerun behavior
 
 
 
@@ -676,11 +615,11 @@ For a production version, I would replace the CSV decision log with a stable pro
 
 
 
-\## 11. Running the project
+## 11. Running the project
 
 
 
-\### Install dependencies
+### Install dependencies
 
 
 
@@ -696,7 +635,7 @@ pip install -r requirements.txt
 
 
 
-\### Set the CRM token
+### Set the CRM token
 
 
 
@@ -716,7 +655,7 @@ set CLIPBOARD\_TOKEN=YOUR\_TOKEN\_HERE
 
 
 
-\### Run the scraper
+### Run the scraper
 
 
 
@@ -740,7 +679,7 @@ website\_locations.csv
 
 
 
-\### Pull CRM data
+### Pull CRM data
 
 
 
@@ -764,7 +703,7 @@ crm\_accounts.csv
 
 
 
-\### Run matching
+### Run matching
 
 
 
@@ -788,7 +727,7 @@ matching\_results.csv
 
 
 
-\### Generate proposals
+### Generate proposals
 
 
 
@@ -812,7 +751,7 @@ final\_proposals.csv
 
 
 
-\### Start the review app
+### Start the review app
 
 
 
@@ -836,35 +775,27 @@ The app will open locally in the browser.
 
 
 
-\## 12. Safety considerations
+## 12. Safety considerations
 
 
 
 The project is designed around a few simple safeguards:
 
-
-
-\* CRM writes only happen after human approval.
-
-\* API credentials are stored outside the repository.
-
-\* Accounts are not deleted or merged.
-
-\* Revenue and outstanding AR are checked before changing ownership.
-
-\* CHOW cases preserve the historical account.
-
-\* Uncertain matches are sent for review instead of being forced.
-
-\* Already-decided proposals are not repeatedly shown by the review app.
+<ul>
+  <li>CRM writes only happen after human approval.</li>
+  <li>API credentials are stored outside the repository.</li>
+  <li>Accounts are not deleted or merged.</li>
+  <li>Revenue and outstanding AR are checked before changing ownership.</li>
+  <li>CHOW cases preserve the historical account.</li>
+  <li>Uncertain matches are sent for review instead of being forced.</li>
+  <li>Already-decided proposals are not repeatedly shown by the review app.</li>
+</ul>
 
 
 
 
 
-
-
-\## 13. What I would improve for production
+## 13. What I would improve for production
 
 
 
@@ -872,7 +803,7 @@ If this were moved beyond the assessment, I would make a few improvements:
 
 
 
-\### Stable proposal IDs
+### Stable proposal IDs
 
 
 
@@ -880,7 +811,7 @@ Each proposal should have an ID based on the account, proposed action, and relev
 
 
 
-\### Persistent decision storage
+### Persistent decision storage
 
 
 
@@ -888,50 +819,37 @@ A small database would be safer than a CSV for tracking approvals and rejections
 
 
 
-\### Better automated tests
+### Better automated tests
 
 
 
 The matching and CHOW decision rules should have tests for edge cases such as:
 
+<ul>
+  <li>Same address but different facility</li>
+  <li>Name changes</li>
+  <li>Missing ZIP codes</li>
+  <li>Duplicate accounts</li>
+  <li>Revenue with no AR</li>
+  <li>AR with no revenue</li>
+  <li>Both revenue and AR</li>
+</ul>
 
 
-\* Same address but different facility
-
-\* Name changes
-
-\* Missing ZIP codes
-
-\* Duplicate accounts
-
-\* Revenue with no AR
-
-\* AR with no revenue
-
-\* Both revenue and AR
-
-
-
-\### Monitoring
+### Monitoring
 
 
 
 A scheduled run should produce a short summary showing:
 
-
-
-\* Number of website communities
-
-\* Number of CRM accounts
-
-\* Number of matches
-
-\* Number of new proposals
-
-\* Number of unresolved cases
-
-\* Number of CRM updates
-
+<ul>
+  <li>Number of website communities</li>
+  <li>Number of CRM accounts</li>
+  <li>Number of matches</li>
+  <li>Number of new proposals</li>
+  <li>Number of unresolved cases</li>
+  <li>Number of CRM updates</li>
+</ul>
 
 
 This would make it easier to notice if the website structure or CRM API changed.
@@ -942,7 +860,7 @@ This would make it easier to notice if the website structure or CRM API changed.
 
 
 
-\## Final note
+## Final note
 
 
 
